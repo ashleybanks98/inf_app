@@ -7,20 +7,17 @@ import os
 import requests
 from io import BytesIO
 
-# Google Drive file download
-file_url = "https://drive.google.com/uc?export=download&id=1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
+def download_and_load_pickle(file_id):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    output_path = "downloaded_file.pkl"  # Temporary path
+    gdown.download(url, output_path, quiet=False)
+    return pd.read_pickle(output_path)
 
-@st.cache_data(show_spinner=False)
-def download_and_load_pickle(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return pd.read_pickle(BytesIO(response.content))
-    else:
-        st.error("🚫 Failed to download the file.")
-        return None
+# Use the file ID directly from Google Drive URL
 
-# Download and load the pickle file
-df = download_and_load_pickle(file_url)
+file_id = "1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
+
+df = download_and_load_pickle(file_id)
 
 
 # Streamlit App Configuration
