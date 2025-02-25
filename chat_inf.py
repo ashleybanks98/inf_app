@@ -87,9 +87,8 @@ Below, you have been provided a set of projects supported by National Institute 
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway.
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-Below your answer, add the list of unique IDs included in the answer.
 
 Projects:
 {combined_deets}
