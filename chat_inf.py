@@ -8,7 +8,7 @@ import requests
 from io import BytesIO
 
 # Google Drive file download
-file_url = "https://drive.google.com/uc?export=download&id=1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT"
+file_url = "https://drive.google.com/uc?export=download&id=1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
 
 @st.cache_data(show_spinner=False)
 def download_and_load_pickle(url):
