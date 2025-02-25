@@ -25,7 +25,7 @@ focus_on = st.text_input("🎯 Focus on (optional):")
 if api_key and query:
     try:
         # Load Data from Repository
-        df = pd.read_csv("inf_emb.csv")
+        df = pd.read_pickle("inf_emb.pkl")
 
         # Prepare text for the prompt
         df['text_for_prompt'] = (
