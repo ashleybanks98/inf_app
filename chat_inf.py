@@ -6,6 +6,7 @@ import google.generativeai as genai
 import os
 import requests
 from io import BytesIO
+import gdown
 
 def download_and_load_pickle(file_id):
     url = f"https://drive.google.com/uc?id={file_id}"
