@@ -8,11 +8,17 @@ import requests
 from io import BytesIO
 import gdown
 
+
 def download_and_load_pickle(file_id):
     url = f"https://drive.google.com/uc?id={file_id}"
-    output_path = "downloaded_file.pkl"  # Temporary path
-    gdown.download(url, output_path, quiet=False)
+    output_path = "downloaded_file.pkl"
+
+    if not os.path.exists(output_path):
+        gdown.download(url, output_path, quiet=False)
+    else:
+        print("✅ File already downloaded. Skipping download.")
     return pd.read_pickle(output_path)
+
 
 # Use the file ID directly from Google Drive URL
 
