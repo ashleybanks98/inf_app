@@ -31,6 +31,7 @@ This tool allows you to query NIHR-supported projects and get a summary generate
 - Enter your **query** (e.g., "cancer research").
 - Enter what you would like the focus of the response to be (e.g, "group the work by infrastructure scheme")
 - Receive an **overview of relevant projects**.
+- Optional: Export **text file** of summary and/or **csv of the 250 closest matching projects**.
 """)
 
 # User Input: API Key and Query
@@ -137,7 +138,7 @@ Projects:
     except Exception as e:
         st.error(f"🚫 An error occurred: {e}")
 else:
-    st.info("💡 Enter your API key, query, and upload the embeddings file to get started.")
+    st.info("💡 Enter your API key and query to go...")
 
 
 
