@@ -42,7 +42,7 @@ focus_on = st.text_input("📝 Enter what you would like the response to focus o
 # Prompt construction with 'focus on'
 focus_text = f"\nFocus particularly on: {focus_on}." if focus_on else ""
 
-if api_key and query and df:
+if api_key and query and not df.empty:
     try:
         # Load Data
         df['text_for_prompt'] = (
