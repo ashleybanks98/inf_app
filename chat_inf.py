@@ -21,7 +21,7 @@ This tool allows you to query NIHR-supported projects and get a summary generate
 # User Input: API Key and Query
 api_key = st.text_input("🔑 Enter your Google API Key:", type="password")
 query = st.text_input("📝 Enter your query:")
-focus_on = st.text_input("📝 Enter what you would like the response to focus on (optional):"
+focus_on = st.text_input("📝 Enter what you would like the response to focus on (optional):")
 uploaded_file = st.file_uploader("📂 Upload the embeddings pickle file (`inf_emb.pkl`):", type=["pkl"])
 
 
