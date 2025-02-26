@@ -172,6 +172,7 @@ Ensure that you write in a neutral scientific tone, being as precise as possible
             )
 
             top_prog = get_top_matches(df_prog, query_embedding, top_n=top_n)
+            top_prog = top_prog.drop_duplicates(subset=["Project_ID"])
             prog_deets = top_prog["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             prog_prompt = f"""
