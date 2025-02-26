@@ -26,8 +26,7 @@ if "top_prog" not in st.session_state:
 def download_and_load_pickle(file_id, output_path):
     """Download and load a pickle file from Google Drive."""
     url = f"https://drive.google.com/uc?id={file_id}"
-    if not os.path.exists(output_path):
-        gdown.download(url, output_path, quiet=False)
+    gdown.download(url, output_path, quiet=False)
     return pd.read_pickle(output_path)
 
 
