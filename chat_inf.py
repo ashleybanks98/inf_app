@@ -69,7 +69,7 @@ def generate_summary(prompt, api_key):
     return response.text
 
 
-def get_top_matches(, query_embedding, top_n):
+def get_top_matches(df, query_embedding, top_n):
     """Get top N matches based on cosine similarity."""
     embeddings_matrix = np.vstack(df['embeddings'].values)
     similarities = cosine_similarity(query_embedding, embeddings_matrix)[0]
