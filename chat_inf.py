@@ -149,6 +149,7 @@ I want you to provide an overview of the work relevant to the query: "{query}".{
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers, schemes, and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
 Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
 Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
+Don't just return a list.
 
 
     
@@ -195,7 +196,8 @@ Focus on research that has been active over the last five years. Only include mo
 Unless specified in the above focus, limit your response to 600 words. If no projects are relevant to the query, say so.
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the programmes, researchers and organisations where appropriate. Make links between organisations and researchers where possible.
 Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.           
+Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
+Don't just return a list.
 
 Programme Awards:
             {prog_deets}
@@ -211,15 +213,16 @@ Programme Awards:
         # Combined (only if "Both" selected)
         if run_option == "Both":
             combined_prompt = f"""
-            You work for the Department of Health and Social Care in the United Kingdom.
-Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
-You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
+Below, you have been given summaries of NIHR programme awards and NIHR Infrastructure supported projects.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
 Unless specified, limit response to 300 words.
 Be as clear as possible, bullet points where sensible.
-Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-            Programme Awards:
+Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
+Don't just return a list.
+
+
+            Combined Summary:
             {combined_summary}
 
 
