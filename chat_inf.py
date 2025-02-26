@@ -85,6 +85,15 @@ def convert_text_to_txt(text):
     return io.BytesIO(text.encode('utf-8'))
 
 
+infra_file_id = "1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
+df_infra = download_and_load_pickle(infra_file_id, "inf_emb.pkl")
+df_infra = clean_column_names(df_infra)
+df_infra = df_infra.fillna("")
+
+prog_file_id = "1dmT7Hvwv0jOTvTUSgDCDUCLUsjw2ADoR"
+df_prog = download_and_load_pickle(prog_file_id, "prog_emb.pkl")
+df_prog = clean_column_names(df_prog)
+
 # Streamlit App
 
 st.set_page_config(page_title="NIHR Project Query Tool", layout="wide")
@@ -124,10 +133,7 @@ if start_query and api_key and query:
 
         # Infrastructure
         if run_option in ["Infrastructure", "Both"]:
-            infra_file_id = "1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
-            df_infra = download_and_load_pickle(infra_file_id, "inf_emb.pkl")
-            df_infra = clean_column_names(df_infra)
-            df_infra = df_infra.fillna("")
+
 
             df_infra['text_for_prompt'] = (
                 "Project Identifier: " + df_infra['ID'] + "\n" +
@@ -169,9 +175,7 @@ Don't just return a list.
 
         # Programmes
         if run_option in ["Programmes", "Both"]:
-            prog_file_id = "1dmT7Hvwv0jOTvTUSgDCDUCLUsjw2ADoR"
-            df_prog = download_and_load_pickle(prog_file_id, "prog_emb.pkl")
-            df_prog = clean_column_names(df_prog)
+
 
             df_prog['text_for_prompt'] = (
                 "Award ID: " + df_prog['Project_ID'] + "\n" +
