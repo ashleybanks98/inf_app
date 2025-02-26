@@ -64,7 +64,6 @@ def generate_summary(prompt, api_key):
     )
 
     response = model.generate_content(prompt)
-    sleep(3)
     return response.text
 
 
