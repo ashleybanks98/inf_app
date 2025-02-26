@@ -21,20 +21,22 @@ if "top_infra" not in st.session_state:
 if "top_prog" not in st.session_state:
     st.session_state["top_prog"] = pd.DataFrame()
 
-#Functions
-
-def download_and_load_pickle(file_id, output_path):
-    """Download and load a pickle file from Google Drive."""
+# 1. Cacheable download-and-load function
+@st.cache_data
+def download_and_load_pickle(file_id: str, output_path: str):
+    """
+    Download a pickle file from Google Drive if it does not exist locally,
+    then load and return it as a DataFrame.
+    """
     url = f"https://drive.google.com/uc?id={file_id}"
-    gdown.download(url, output_path, quiet=False)
+    if not os.path.exists(output_path):
+        gdown.download(url, output_path, quiet=True)
     return pd.read_pickle(output_path)
-
 
 def clean_column_names(df):
     """Remove non-printable characters and strip spaces from column names."""
     df.columns = [re.sub(r'[^\x20-\x7E]', '', col).strip() for col in df.columns]
     return df
-
 
 def generate_embedding(text, api_key):
     """Generate embedding using Gemini."""
@@ -45,7 +47,6 @@ def generate_embedding(text, api_key):
         task_type="semantic_similarity",
     )
     return np.array(response['embedding']).reshape(1, -1)
-
 
 def generate_summary(prompt, api_key):
     """Generate summary from Gemini given a prompt."""
@@ -62,10 +63,8 @@ def generate_summary(prompt, api_key):
         model_name="gemini-2.0-flash",
         generation_config=generation_config,
     )
-
     response = model.generate_content(prompt)
     return response.text
-
 
 def get_top_matches(df, query_embedding, top_n):
     """Get top N matches based on cosine similarity."""
@@ -74,17 +73,16 @@ def get_top_matches(df, query_embedding, top_n):
     df['similarity'] = similarities
     return df.sort_values(by='similarity', ascending=False).head(top_n)
 
-
 def convert_df_to_csv(df):
     """Convert DataFrame to CSV bytes for download."""
     return df.to_csv(index=False).encode('utf-8')
-
 
 def convert_text_to_txt(text):
     """Convert text to TXT bytes for download."""
     return io.BytesIO(text.encode('utf-8'))
 
 
+# 2. Load data once via cached function
 infra_file_id = "1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
 df_infra = download_and_load_pickle(infra_file_id, "inf_emb.pkl")
 df_infra = clean_column_names(df_infra)
@@ -95,7 +93,6 @@ df_prog = download_and_load_pickle(prog_file_id, "prog_emb.pkl")
 df_prog = clean_column_names(df_prog)
 
 # Streamlit App
-
 st.set_page_config(page_title="NIHR Project Query Tool", layout="wide")
 st.title("🔍 NIHR Project Query Tool")
 
@@ -133,8 +130,6 @@ if start_query and api_key and query:
 
         # Infrastructure
         if run_option in ["Infrastructure", "Both"]:
-
-
             df_infra['text_for_prompt'] = (
                 "Project Identifier: " + df_infra['ID'] + "\n" +
                 "Financial Year: " + df_infra['Financial Year'] + "\n" +
@@ -159,24 +154,17 @@ Ensure that you write in a neutral scientific tone, being as accurate as possibl
 Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
 Don't just return a list.
 
-
-    
-
-            Projects:
-            {infra_deets}
-            """
+Projects:
+{infra_deets}
+"""
 
             infra_summary = generate_summary(infra_prompt, api_key)
-            # Store in session_state
             st.session_state["infra_summary"] = infra_summary
             st.session_state["top_infra"] = top_infra
-
             combined_summary += f"**Infrastructure Projects Summary:**\n{infra_summary}\n\n"
 
         # Programmes
         if run_option in ["Programmes", "Both"]:
-
-
             df_prog['text_for_prompt'] = (
                 "Award ID: " + df_prog['Project_ID'] + "\n" +
                 "Start-End Dates: " + df_prog['Start_date'] + " until " + df_prog['End_Date'] + "\n" +
@@ -192,7 +180,7 @@ Don't just return a list.
             prog_deets = top_prog["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             prog_prompt = f"""
-            You work for the Department of Health and Social Care in the United Kingdom.
+You work for the Department of Health and Social Care in the United Kingdom.
 Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
 You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
@@ -206,14 +194,12 @@ Make sure the text is easy to read and take the main points away from. Where use
 Don't just return a list.
 
 Programme Awards:
-            {prog_deets}
-            """
+{prog_deets}
+"""
 
             prog_summary = generate_summary(prog_prompt, api_key)
-            # Store in session_state
             st.session_state["prog_summary"] = prog_summary
             st.session_state["top_prog"] = top_prog
-
             combined_summary += f"**Programme Awards Summary:**\n{prog_summary}\n\n"
 
         # Combined (only if "Both" selected)
@@ -227,84 +213,10 @@ Be as clear as possible, bullet points where sensible.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
 Don't just return a list.
 
-
-            Combined Summary:
-            {combined_summary}
-
-
-            """
-
+Combined Summary:
+{combined_summary}
+"""
             final_summary = generate_summary(combined_prompt, api_key)
             st.session_state["final_summary"] = final_summary
 
-elif start_query and (not api_key or not query):
-    st.warning("⚠️ Please enter both your Google API Key and query.")
-
-# --- DISPLAY RESULTS ---
-
-# Show Infrastructure Summary if it exists
-if st.session_state["infra_summary"]:
-    st.subheader("📊 Infrastructure Summary")
-    st.write(st.session_state["infra_summary"])
-
-# Show Programme Summary if it exists
-if st.session_state["prog_summary"]:
-    st.subheader("📊 Programme Awards Summary")
-    st.write(st.session_state["prog_summary"])
-
-# Show Combined Summary if it exists
-if st.session_state["final_summary"]:
-    st.subheader("📝 Combined Summary")
-    st.write(st.session_state["final_summary"])
-
-
-# --- DOWNLOAD BUTTONS --- 
-if not st.session_state["top_prog"].empty:
-    st.download_button(
-        label="📥 Download Programme Results as CSV",
-        data=convert_df_to_csv(
-            st.session_state["top_prog"].drop(
-                columns=['embeddings', 'text_for_prompt'], 
-                errors='ignore'
-            )
-        ),
-        file_name=f"programme_results_{query.replace(' ', '_')}.csv",
-        mime="text/csv",
-    )
-
-if not st.session_state["top_infra"].empty:
-    st.download_button(
-        label="📥 Download Infrastructure Results as CSV",
-        data=convert_df_to_csv(
-            st.session_state["top_infra"].drop(
-                columns=['embeddings', 'text_for_prompt'], 
-                errors='ignore'
-            )
-        ),
-        file_name=f"infra_results_{query.replace(' ', '_')}.csv",
-        mime="text/csv",
-    )
-
-if st.session_state["infra_summary"]:
-    st.download_button(
-        label="📥 Download Infrastructure Summary as TXT",
-        data=convert_text_to_txt(st.session_state["infra_summary"]),
-        file_name=f"infra_summary_{query.replace(' ', '_')}.txt",
-        mime="text/plain",
-    )
-
-if st.session_state["prog_summary"]:
-    st.download_button(
-        label="📥 Download Programme Summary as TXT",
-        data=convert_text_to_txt(st.session_state["prog_summary"]),
-        file_name=f"programme_summary_{query.replace(' ', '_')}.txt",
-        mime="text/plain",
-    )
-
-if st.session_state["final_summary"]:
-    st.download_button(
-        label="📥 Download Combined Summary as TXT",
-        data=convert_text_to_txt(st.session_state["final_summary"]),
-        file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
-        mime="text/plain",
-    )
+elif start_q
