@@ -9,6 +9,18 @@ import gdown
 import io
 from time import sleep
 
+# -- Session State Initialization --
+if "infra_summary" not in st.session_state:
+    st.session_state["infra_summary"] = ""
+if "prog_summary" not in st.session_state:
+    st.session_state["prog_summary"] = ""
+if "final_summary" not in st.session_state:
+    st.session_state["final_summary"] = ""
+if "top_infra" not in st.session_state:
+    st.session_state["top_infra"] = pd.DataFrame()
+if "top_prog" not in st.session_state:
+    st.session_state["top_prog"] = pd.DataFrame()
+
 #Functions
 
 def download_and_load_pickle(file_id, output_path):
@@ -75,9 +87,7 @@ def convert_text_to_txt(text):
     return io.BytesIO(text.encode('utf-8'))
 
 
-
 # Streamlit App
-
 
 st.set_page_config(page_title="NIHR Project Query Tool", layout="wide")
 st.title("🔍 NIHR Project Query Tool")
@@ -88,7 +98,7 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 - Enter your **Google API Key** (can be generated at "https://aistudio.google.com/apikey")  
 - Enter your **query**, e.g., "novel drug delivery device"  
 - Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work".  
-- Specify the **number of closest matches** to consider.  
+- Specify the **number of closest matches** to consider, use more for broader topics.  
 - Press **Start** to generate the summary.  
 - **Export the results** as CSV or TXT files.  
 
@@ -105,17 +115,13 @@ start_query = st.button("🚀 Start")
 
 focus_text = f"\nFocus particularly on: {focus_on}." if focus_on else ""
 
-# Initialize variables for downloads
-infra_summary, prog_summary, final_summary = "", "", ""
-top_infra, top_prog = pd.DataFrame(), pd.DataFrame()
-
-#  Query 
-
+# Query
 if start_query and api_key and query:
     with st.spinner("✨ Generating summaries..."):
         query_embedding = generate_embedding(query, api_key)
         combined_summary = ""
 
+        # Infrastructure
         if run_option in ["Infrastructure", "Both"]:
             infra_file_id = "1T8ZJaRFLrCaPCyE2P_QOUe5bCFhenT-W"
             df_infra = download_and_load_pickle(infra_file_id, "inf_emb.pkl")
@@ -138,7 +144,7 @@ if start_query and api_key and query:
 Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
-Unless specified in the focus above, limit response to 750 words.
+Unless specified in the focus above, limit response to 600 words.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
@@ -151,11 +157,13 @@ Ensure that you write in a neutral scientific tone, being as precise as possible
             """
 
             infra_summary = generate_summary(infra_prompt, api_key)
-            st.subheader("📊 Infrastructure Summary")
-            st.write(infra_summary)
+            # Store in session_state
+            st.session_state["infra_summary"] = infra_summary
+            st.session_state["top_infra"] = top_infra
+
             combined_summary += f"**Infrastructure Projects Summary:**\n{infra_summary}\n\n"
 
-            
+        # Programmes
         if run_option in ["Programmes", "Both"]:
             prog_file_id = "1dmT7Hvwv0jOTvTUSgDCDUCLUsjw2ADoR"
             df_prog = download_and_load_pickle(prog_file_id, "prog_emb.pkl")
@@ -183,21 +191,21 @@ I want you to provide an overview of the work relevant to the query: "{query}".{
 Do not include any work that is not directly relevant to the query, and really make sure you consider the focus that has been specified.
 Don't just return a list, this is boring.
 Focus on research that has been active over the last five years. Only include more if you are struggling.
-Unless specified in the above focus, limit your response to 750 words.
+Unless specified in the above focus, limit your response to 600 words.
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
             Programme Awards:
             {prog_deets}
             """
-            print(prog_deets)
 
             prog_summary = generate_summary(prog_prompt, api_key)
-            st.subheader("📊 Programme Awards Summary")
-            st.write(prog_summary)
+            # Store in session_state
+            st.session_state["prog_summary"] = prog_summary
+            st.session_state["top_prog"] = top_prog
+
             combined_summary += f"**Programme Awards Summary:**\n{prog_summary}\n\n"
 
-
-
+        # Combined (only if "Both" selected)
         if run_option == "Both":
             combined_prompt = f"""
             You work for the Department of Health and Social Care in the United Kingdom.
@@ -205,7 +213,8 @@ Below, you have been provided a set of programme awards funded by National Insti
 You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
-Unless specified, limit response to 400 words.
+Unless specified, limit response to 300 words.
+Be as clear as possible, bullet points where sensible.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
             Programme Awards:
             {combined_summary}
@@ -214,31 +223,76 @@ Ensure that you write in a neutral scientific tone, being as precise as possible
             """
 
             final_summary = generate_summary(combined_prompt, api_key)
-            st.subheader("📝 Combined Summary")
-            st.write(final_summary)
-       
-        # Export Programme results
-        st.download_button(
-            label="📥 Download Programme Results as CSV",
-            data=convert_df_to_csv(top_prog.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
-            file_name=f"programme_results_{query.replace(' ', '_')}.csv",
-            mime="text/csv",
-        )
-    # Export Infrastructure results
-        st.download_button(
-            label="📥 Download Infrastructure Results as CSV",
-            data=convert_df_to_csv(top_infra.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
-            file_name=f"infra_results_{query.replace(' ', '_')}.csv",
-            mime="text/csv",
-        )
-
-        # Export combined summary as TXT
-        st.download_button(
-            label="📥 Download Combined Summary as TXT",
-            data=convert_text_to_txt(final_summary),
-            file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
-            mime="text/plain",
-        )
+            st.session_state["final_summary"] = final_summary
 
 elif start_query and (not api_key or not query):
     st.warning("⚠️ Please enter both your Google API Key and query.")
+
+# --- DISPLAY RESULTS ---
+
+# Show Infrastructure Summary if it exists
+if st.session_state["infra_summary"]:
+    st.subheader("📊 Infrastructure Summary")
+    st.write(st.session_state["infra_summary"])
+
+# Show Programme Summary if it exists
+if st.session_state["prog_summary"]:
+    st.subheader("📊 Programme Awards Summary")
+    st.write(st.session_state["prog_summary"])
+
+# Show Combined Summary if it exists
+if st.session_state["final_summary"]:
+    st.subheader("📝 Combined Summary")
+    st.write(st.session_state["final_summary"])
+
+
+# --- DOWNLOAD BUTTONS --- 
+if not st.session_state["top_prog"].empty:
+    st.download_button(
+        label="📥 Download Programme Results as CSV",
+        data=convert_df_to_csv(
+            st.session_state["top_prog"].drop(
+                columns=['embeddings', 'text_for_prompt'], 
+                errors='ignore'
+            )
+        ),
+        file_name=f"programme_results_{query.replace(' ', '_')}.csv",
+        mime="text/csv",
+    )
+
+if not st.session_state["top_infra"].empty:
+    st.download_button(
+        label="📥 Download Infrastructure Results as CSV",
+        data=convert_df_to_csv(
+            st.session_state["top_infra"].drop(
+                columns=['embeddings', 'text_for_prompt'], 
+                errors='ignore'
+            )
+        ),
+        file_name=f"infra_results_{query.replace(' ', '_')}.csv",
+        mime="text/csv",
+    )
+
+if st.session_state["infra_summary"]:
+    st.download_button(
+        label="📥 Download Infrastructure Summary as TXT",
+        data=convert_text_to_txt(st.session_state["infra_summary"]),
+        file_name=f"infra_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
+
+if st.session_state["prog_summary"]:
+    st.download_button(
+        label="📥 Download Programme Summary as TXT",
+        data=convert_text_to_txt(st.session_state["prog_summary"]),
+        file_name=f"programme_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
+
+if st.session_state["final_summary"]:
+    st.download_button(
+        label="📥 Download Combined Summary as TXT",
+        data=convert_text_to_txt(st.session_state["final_summary"]),
+        file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
