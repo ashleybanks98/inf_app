@@ -7,6 +7,7 @@ import os
 import re
 import gdown
 import io
+from time import sleep
 
 #Functions
 
@@ -39,9 +40,9 @@ def generate_summary(prompt, api_key):
     """Generate summary from Gemini given a prompt."""
     genai.configure(api_key=api_key)
     generation_config = {
-        "temperature": 0.2,
-        "top_p": 0.1,
-        "top_k": 5,
+        "temperature": 0.3,
+        "top_p": 0.2,
+        "top_k": 10,
         "max_output_tokens": 8192,
         "response_mime_type": "text/plain",
     }
@@ -52,6 +53,7 @@ def generate_summary(prompt, api_key):
     )
 
     response = model.generate_content(prompt)
+    sleep(3)
     return response.text
 
 
@@ -85,10 +87,12 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 - Select **Infrastructure**, **Programmes**, or **Both**.  
 - Enter your **Google API Key** (can be generated at "https://aistudio.google.com/apikey")  
 - Enter your **query**, e.g., "novel drug delivery device"  
-- Specify the **focus** of the summary (optional).  
+- Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work".  
 - Specify the **number of closest matches** to consider.  
 - Press **Start** to generate the summary.  
 - **Export the results** as CSV or TXT files.  
+
+**Please note::** Language models can make errors, only use these results as an overview and validate prior to sharing further.
 """)
 
 # User inputs
@@ -105,9 +109,7 @@ focus_text = f"\nFocus particularly on: {focus_on}." if focus_on else ""
 infra_summary, prog_summary, final_summary = "", "", ""
 top_infra, top_prog = pd.DataFrame(), pd.DataFrame()
 
-# ---------------------------- #
-# 🧠 Query Logic
-# ---------------------------- #
+#  Query 
 
 if start_query and api_key and query:
     with st.spinner("✨ Generating summaries..."):
@@ -132,13 +134,15 @@ if start_query and api_key and query:
             top_infra = get_top_matches(df_infra, query_embedding, top_n=top_n)
             infra_deets = top_infra["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
-            infra_prompt = f"""
-            You work for the Department of Health and Social Care in the United Kingdom in a communications role.
-            Below are projects supported by the NIHR Infrastructure.
-            Provide an overview of the work provided that is relevant to the query: "{query}".{focus_text}
-            Don't include work that is not relevant to the queyr.
-            Be precise, use a neutral scientific tone, and reference Project IDs.
-            Where possible, highlight the benefit of the projects.
+            infra_prompt = f"""You work for the Department of Health and Social Care in the United Kingdom.
+Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
+You have been provided the project titles, research summaries, with the centre and year the project took place.
+There may be duplicated projects.
+Unless specified in the focus above, limit response to 750 words.
+I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
+Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
+
 
     
 
@@ -151,14 +155,7 @@ if start_query and api_key and query:
             st.write(infra_summary)
             combined_summary += f"**Infrastructure Projects Summary:**\n{infra_summary}\n\n"
 
-            # Export Infrastructure results
-            st.download_button(
-                label="📥 Download Infrastructure Results as CSV",
-                data=convert_df_to_csv(top_infra.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
-                file_name=f"infra_results_{query.replace(' ', '_')}.csv",
-                mime="text/csv",
-            )
-
+            
         if run_option in ["Programmes", "Both"]:
             prog_file_id = "1dmT7Hvwv0jOTvTUSgDCDUCLUsjw2ADoR"
             df_prog = download_and_load_pickle(prog_file_id, "prog_emb.pkl")
@@ -178,51 +175,69 @@ if start_query and api_key and query:
             prog_deets = top_prog["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             prog_prompt = f"""
-            You work for the Department of Health and Social Care in a communications role.
-            Below are programme awards supported by NIHR.
-            Provide an overview of the work provided that is relevant to the query: "{query}".{focus_text}
-            Don't include work that is not relevant to the queyr.
-            Be precise, use a neutral scientific tone, and reference Project IDs.
-            Where possible, highlight the benefit of the projects.
-
+            You work for the Department of Health and Social Care in the United Kingdom.
+Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
+You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
+I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
+Do not include any work that is not directly relevant to the query, and really make sure you consider the focus that has been specified.
+Don't just return a list, this is boring.
+Focus on research that has been active over the last five years. Only include more if you are struggling.
+Unless specified in the above focus, limit your response to 750 words.
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
+Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
             Programme Awards:
             {prog_deets}
             """
+            print(prog_deets)
 
             prog_summary = generate_summary(prog_prompt, api_key)
             st.subheader("📊 Programme Awards Summary")
             st.write(prog_summary)
             combined_summary += f"**Programme Awards Summary:**\n{prog_summary}\n\n"
 
-            # Export Programme results
-            st.download_button(
-                label="📥 Download Programme Results as CSV",
-                data=convert_df_to_csv(top_prog.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
-                file_name=f"programme_results_{query.replace(' ', '_')}.csv",
-                mime="text/csv",
-            )
+
 
         if run_option == "Both":
             combined_prompt = f"""
-            You work for the Department of Health and Social Care in a communications role.
-            You have been provided two separate summaries of NIHR-supported research:
+            You work for the Department of Health and Social Care in the United Kingdom.
+Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
+You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
+I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
+Unless specified, limit response to 400 words.
+Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
+            Programme Awards:
             {combined_summary}
 
-            Please provide a combined, cohesive overview highlighting how NIHR infrastructure and programme awards support research related to the query: "{query}".{focus_text}
-            Link projects where appropriate, mention researchers and centres, and reference IDs.
+
             """
 
             final_summary = generate_summary(combined_prompt, api_key)
             st.subheader("📝 Combined Summary")
             st.write(final_summary)
+       
+        # Export Programme results
+        st.download_button(
+            label="📥 Download Programme Results as CSV",
+            data=convert_df_to_csv(top_prog.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
+            file_name=f"programme_results_{query.replace(' ', '_')}.csv",
+            mime="text/csv",
+        )
+    # Export Infrastructure results
+        st.download_button(
+            label="📥 Download Infrastructure Results as CSV",
+            data=convert_df_to_csv(top_infra.drop(columns=['embeddings', 'text_for_prompt'], errors='ignore')),
+            file_name=f"infra_results_{query.replace(' ', '_')}.csv",
+            mime="text/csv",
+        )
 
-            # Export combined summary as TXT
-            st.download_button(
-                label="📥 Download Combined Summary as TXT",
-                data=convert_text_to_txt(final_summary),
-                file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
-                mime="text/plain",
-            )
+        # Export combined summary as TXT
+        st.download_button(
+            label="📥 Download Combined Summary as TXT",
+            data=convert_text_to_txt(final_summary),
+            file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
+            mime="text/plain",
+        )
 
 elif start_query and (not api_key or not query):
     st.warning("⚠️ Please enter both your Google API Key and query.")
