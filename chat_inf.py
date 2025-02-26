@@ -219,4 +219,72 @@ Combined Summary:
             final_summary = generate_summary(combined_prompt, api_key)
             st.session_state["final_summary"] = final_summary
 
-elif start_q
+elif start_query and (not api_key or not query):
+    st.warning("⚠️ Please enter both your Google API Key and query.")
+
+# --- DISPLAY RESULTS ---
+# Show Infrastructure Summary if it exists
+if st.session_state["infra_summary"]:
+    st.subheader("📊 Infrastructure Summary")
+    st.write(st.session_state["infra_summary"])
+
+# Show Programme Summary if it exists
+if st.session_state["prog_summary"]:
+    st.subheader("📊 Programme Awards Summary")
+    st.write(st.session_state["prog_summary"])
+
+# Show Combined Summary if it exists
+if st.session_state["final_summary"]:
+    st.subheader("📝 Combined Summary")
+    st.write(st.session_state["final_summary"])
+
+# --- DOWNLOAD BUTTONS ---
+if not st.session_state["top_prog"].empty:
+    st.download_button(
+        label="📥 Download Programme Results as CSV",
+        data=convert_df_to_csv(
+            st.session_state["top_prog"].drop(
+                columns=['embeddings', 'text_for_prompt'], 
+                errors='ignore'
+            )
+        ),
+        file_name=f"programme_results_{query.replace(' ', '_')}.csv",
+        mime="text/csv",
+    )
+
+if not st.session_state["top_infra"].empty:
+    st.download_button(
+        label="📥 Download Infrastructure Results as CSV",
+        data=convert_df_to_csv(
+            st.session_state["top_infra"].drop(
+                columns=['embeddings', 'text_for_prompt'], 
+                errors='ignore'
+            )
+        ),
+        file_name=f"infra_results_{query.replace(' ', '_')}.csv",
+        mime="text/csv",
+    )
+
+if st.session_state["infra_summary"]:
+    st.download_button(
+        label="📥 Download Infrastructure Summary as TXT",
+        data=convert_text_to_txt(st.session_state["infra_summary"]),
+        file_name=f"infra_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
+
+if st.session_state["prog_summary"]:
+    st.download_button(
+        label="📥 Download Programme Summary as TXT",
+        data=convert_text_to_txt(st.session_state["prog_summary"]),
+        file_name=f"programme_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
+
+if st.session_state["final_summary"]:
+    st.download_button(
+        label="📥 Download Combined Summary as TXT",
+        data=convert_text_to_txt(st.session_state["final_summary"]),
+        file_name=f"combined_summary_{query.replace(' ', '_')}.txt",
+        mime="text/plain",
+    )
