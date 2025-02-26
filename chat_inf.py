@@ -104,7 +104,7 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 
 **Please note::** 
 Language models can make errors, only use these results as an overview and validate prior to sharing further.
-Infrastructure supported projects only include those supported in 2022/23 and 2023/24/
+Infrastructure supported projects only include those supported in 2022/23 and 2023/24.
 
 """)
 
