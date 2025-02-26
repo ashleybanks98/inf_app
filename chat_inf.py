@@ -144,10 +144,11 @@ if start_query and api_key and query:
 Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
-Unless specified in the focus above, limit response to 600 words.
+Unless specified in the focus, limit response to 600 words.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
-Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers, schemes, and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
+Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
+Make sure the text is easy to read and take the main points away from.
 
 
     
@@ -192,9 +193,11 @@ Do not include any work that is not directly relevant to the query, and really m
 Don't just return a list, this is boring.
 Focus on research that has been active over the last five years. Only include more if you are struggling.
 Unless specified in the above focus, limit your response to 600 words.
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
-Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-            Programme Awards:
+Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the programmes, researchers and organisations where appropriate. Make links between organisations and researchers where possible.
+Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
+Make sure the text is easy to read and take the main points away from.            
+
+Programme Awards:
             {prog_deets}
             """
 
