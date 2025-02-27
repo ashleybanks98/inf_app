@@ -222,6 +222,7 @@ Unless specified, limit response to 300 words.
 Be as clear as possible, bullet points where sensible.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
 Don't just return a list.
+MAKE SURE YOU TALK ABOUT BOTH INFRASTRUCTURE SUPPORTED PROJCECTS AND PROGRAMME AWARDS, LINKING THE COMMON THEMES OF THE SUMMARIES UP. This summary will be displayed with the combined summary, so no need to repeat everything, just make the key points. 
 
 
             Combined Summary:
