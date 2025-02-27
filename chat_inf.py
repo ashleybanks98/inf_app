@@ -95,23 +95,26 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 - Select **Infrastructure**, **Programmes**, or **Both**.  
 - Enter your **Google API Key** (can be generated at "https://aistudio.google.com/apikey")  
 - Enter your **query**, e.g., "novel drug delivery device"  
-- Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work".  
+- Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work", "do not talk about researchers".  
 - Specify the **number of closest matches** to consider, use more for broader topics.  
 - Press **Start** to generate the summary.  
 - **Export the results** as CSV or TXT files.  
 
 **Please note:** 
-Language models can make errors, only use these results as an overview and validate prior to sharing further.
-Infrastructure supported projects only include those supported in 2022/23 and 2023/24.
+- Language models can make errors, only use these results as an overview and validate prior to sharing further.
+- Infrastructure supported projects only include those supported in 2022/23 and 2023/24.
+- Programme awards are only those available on NIHR Open Data.
+- Output csv files will simply show the results the summary has been generated using, sorted by descending semantic similarity to the query, and may either show many false positives (number of matches too high) or miss relevant research (number of results too low).
+
 
 """)
 
 # User inputs
 api_key = st.text_input("🔑 Google API Key:", type="password")
 query = st.text_input("📝 Query:")
-focus_on = st.text_input("🎯 Focus (optional):")
+focus_on = st.text_input("🎯 Focus of summary (optional, does not alter the query):")
 run_option = st.selectbox("📂 Select dataset to query:", ["Infrastructure", "Programmes", "Both"])
-top_n = st.number_input("🔢 Number of closest matching results to consider:", min_value=1, max_value=1000, value=150, step=10)
+top_n = st.number_input("🔢 Number of closest matching results to show the language model:", min_value=1, max_value=1000, value=150, step=10)
 start_query = st.button("🚀 Start")
 
 focus_text = f"\nFocus particularly on: {focus_on}." if focus_on else ""
