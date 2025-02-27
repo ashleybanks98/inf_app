@@ -95,7 +95,7 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 - Select **Infrastructure**, **Programmes**, or **Both**.  
 - Enter your **Google API Key** (can be generated at "https://aistudio.google.com/apikey")  
 - Enter your **query**, e.g., "novel drug delivery device"  
-- Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work", "do not talk about researchers".  
+- Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work", "do not talk about the researchers", or "group projects by their intended aim".  
 - Specify the **number of closest matches** to consider, use more for broader topics.  
 - Press **Start** to generate the summary.  
 - **Export the results** as CSV or TXT files.  
