@@ -121,6 +121,9 @@ focus_text = f"\nFocus particularly on: {focus_on}." if focus_on else ""
 # Query
 if start_query and api_key and query:
     with st.spinner("✨ Generating summaries..."):
+        st.session_state["infra_summary"] = ""
+        st.session_state["prog_summary"] = ""
+        st.session_state["final_summary"] = ""
         query_embedding = generate_embedding(query, api_key)
         combined_summary = ""
 
