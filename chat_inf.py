@@ -147,22 +147,30 @@ if start_query and api_key and query:
             infra_deets = top_infra["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             infra_prompt = f"""
-**INSTRUCTIONS**
-You work for the Department of Health and Social Care in the United Kingdom.
-Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
-You have been provided the project titles, research summaries, with the centre and year the project took place.
-There may be duplicated projects.
-Where possible, discuss work from all schemes - so BRCs, MICs, ARCs, PSTRCs and so on, these are determined by the 'centre name' which will have location and scheme in the name.
-Unless specified in the focus, limit response to 500 words. If no projects are relevant to the query, say so.
-I want you to provide an overview of the work relevant to the query: "{query}"
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers, schemes, and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
-Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
-Don't just return a list.
+**CONTEXT**
+- Below, you have been provided a set of **projects** supported by National Institute for Health and Care (NIHR) infrastructure.
+- You have been provided the project titles, research summaries, with the centre and year the project took place.
+- There may be duplicated projects where they are supported across multiple years or multiple centres.
 
-Specific focus request:
+**TASK**
+- I want you to provide an overview of the work relevant to the query: "{query}"
+
+**INSTRUCTIONS**
+- Where possible, discuss work from all schemes - so BRCs, MICs, ARCs, PSTRCs and so on, these are determined by the 'centre name' which will have location and scheme in the name.
+- Unless specified in the focus, limit response to 500 words. 
+- If no projects are relevant to the query, say so.
+- Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. 
+- Link together centres and researchers when it is the same project where appropriate.
+- Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. 
+- Only talk about the evidence you are presented with in the prompt, but make the links between projects whenever possible.
+- Make sure the text is easy to take the main points away from. Where useful, use bold text, bullet points, and section headings. 
+- Try and talk about aims and potential benefits of the research as much as possible.
+- Don't just return a list.
+- Make sure you don't repeat yourself.
+
+**Specific focus request from the user:**
 {focus_text}
-    
+
 
 **Projects:**
 {infra_deets}
@@ -196,19 +204,31 @@ Specific focus request:
             prog_deets = top_prog["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             prog_prompt = f"""
+**CONTEXT**
+- Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
+- You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
+
+
+**TASK**
+- I want you to provide an overview of the work relevant to the query: "{query}"
+
 **INSTRUCTIONS**
-You work for the Department of Health and Social Care in the United Kingdom.
-Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
-You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
-I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
-Do not include any work that is not directly relevant to the query, and really make sure you consider the focus that has been specified.
-Don't just return a list, this is boring.
-Focus on research that has been active over the last five years. Only include more if you are struggling. 
-Unless specified in the above focus, limit your response to 600 words. If no projects are relevant to the query, say so.
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the programmes, researchers and organisations where appropriate. Make links between organisations and researchers where possible.
-Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
-Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
-Don't just return a list.
+- Unless specified in the focus, limit response to 500 words. 
+- If no projects are relevant to the query, say so.
+- Try to advertise NIHR positively, linking between the research to show how NIHR supports innovation across the translational pathway. 
+- Talk about the programmes, researchers and organisations where appropriate. Make links between organisations and researchers where possible.
+- Try and discuss work across different programmes where applicable.
+- Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. 
+- Only talk about the evidence you are presented with in the prompt, but make the links between projects whenever possible.
+- Make sure the text is easy to take the main points away from. Where useful, use bold text, bullet points, and section headings. 
+- Try and talk about aims and potential benefits of the research as much as possible.
+- Talk about UK based research first unless specified in the specific focus below.
+- Don't just return a list.
+- Make sure you don't repeat yourself.
+
+**Specific focus request from the user:**
+{focus_text}
+
 
 **Programme Awards**:
 {prog_deets}
@@ -225,15 +245,16 @@ Don't just return a list.
         if run_option == "Both":
             combined_prompt = f"""
 **INSTRUCTIONS**
-Below, you have been given summaries of NIHR programme awards and NIHR Infrastructure supported projects.
-I want you to provide an overview of the work relevant to the query: "{query}"
-Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
-Unless specified in the focus request, limit response to 500 words.
-Talk about research focused in the UK first, unless specified in the specific focus.
-Be as clear as possible, bullet points where sensible.
-Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
-Don't just return a list.
-MAKE SURE YOU TALK ABOUT BOTH INFRASTRUCTURE SUPPORTED PROJCECTS AND PROGRAMME AWARDS, LINKING THE COMMON THEMES OF THE SUMMARIES UP. This summary will be displayed with the combined summary, so no need to repeat everything, just make the key points. 
+- Below, you have been given summaries of NIHR programme awards and NIHR Infrastructure supported projects.
+- I want you to provide an overview of the work relevant to the query: "{query}"
+- Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. 
+- Unless specified in the focus request, limit response to 500 words.
+- Talk about research focused in the UK first, unless specified in the specific focus.
+- Be as clear as possible, bullet points where sensible.
+- Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
+- Don't just return a list.
+- MAKE SURE YOU TALK ABOUT BOTH INFRASTRUCTURE SUPPORTED PROJCECTS AND PROGRAMME AWARDS, LINKING THE COMMON THEMES OF THE SUMMARIES UP. 
+- This summary will be displayed with the combined summary, so no need to repeat everything, just make the key points. 
 
 Specific focus request:
 {focus_text}
