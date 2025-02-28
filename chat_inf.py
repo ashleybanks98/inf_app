@@ -152,7 +152,7 @@ if start_query and api_key and query:
 
 
 **TASK**
-- Using only the projects listed below, provide an easy to read summary of the research directly relevant to the query: "{query}"
+- Using only the projects listed below, provide an easy to read summary, grouping by common themes, of the research directly relevant to the query: "{query}"
 
 **INSTRUCTIONS**
 - Where possible, discuss work from all schemes - so BRCs, MICs, ARCs, PSTRCs and so on, these are determined by the 'centre name' which will have location and scheme in the name.
@@ -164,7 +164,7 @@ if start_query and api_key and query:
 - Only talk about the evidence you are presented with in the prompt, but make the links between projects whenever possible.
 - Make sure the text is easy to take the main points away from. Where useful, use bold text, bullet points, and section headings. 
 - Try and talk about aims and potential benefits of the research as much as possible.
-- Don't just return a list.
+- Talk around the projects and make links, I do not want just a list.
 - Make sure you don't repeat yourself.
 - If there are a lot of relevant projects, just talk about the most interesting and the common themes.
 
@@ -210,7 +210,7 @@ if start_query and api_key and query:
 
 
 **TASK**
-- Using only the awards below, provide an easy to read summary of the research directly relevant to the query: "{query}"
+- Using only the awards below, provide an easy to read summary, grouping by common themes, of the research directly relevant to the query: "{query}"
 
 **INSTRUCTIONS**
 - Unless specified in the focus, limit response to 500 words. 
@@ -223,7 +223,7 @@ if start_query and api_key and query:
 - Make sure the text is easy to take the main points away from. Where useful, use bold text, bullet points, and section headings. 
 - Try and talk about aims and potential benefits of the research as much as possible.
 - Talk about UK based research first unless specified in the specific focus below.
-- Don't just return a list.
+- Talk around the projects and make links, I do not want just a list.
 - Make sure you don't repeat yourself.
 - If there are a lot of relevant projects, just talk about the most interesting and the common themes.
 
