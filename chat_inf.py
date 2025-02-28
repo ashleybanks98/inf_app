@@ -54,7 +54,7 @@ def generate_summary(prompt, api_key):
         "temperature": 0.2,
         "top_p": 0.15,
         "top_k": 5,
-        "max_output_tokens": 7000,
+        "max_output_tokens": 4000,
         "response_mime_type": "text/plain",
     }
 
