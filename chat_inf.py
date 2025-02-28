@@ -64,6 +64,7 @@ def generate_summary(prompt, api_key):
     )
 
     response = model.generate_content(prompt)
+    sleep(5)
     return response.text
 
 
@@ -145,7 +146,9 @@ if start_query and api_key and query:
             top_infra = get_top_matches(df_infra, query_embedding, top_n=top_n)
             infra_deets = top_infra["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
-            infra_prompt = f"""You work for the Department of Health and Social Care in the United Kingdom.
+            infra_prompt = f"""
+**INSTRUCTIONS**
+You work for the Department of Health and Social Care in the United Kingdom.
 Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
@@ -159,8 +162,8 @@ Don't just return a list.
 
     
 
-            Projects:
-            {infra_deets}
+**Projects:**
+{infra_deets}
             """
 
             infra_summary = generate_summary(infra_prompt, api_key)
@@ -191,7 +194,8 @@ Don't just return a list.
             prog_deets = top_prog["text_for_prompt"].astype(str).str.cat(sep="\n____\n\n")
 
             prog_prompt = f"""
-            You work for the Department of Health and Social Care in the United Kingdom.
+**INSTRUCTIONS**
+You work for the Department of Health and Social Care in the United Kingdom.
 Below, you have been provided a set of programme awards funded by National Institute for Health and Care Research.
 You have been provided the project titles, research summaries, the researcher, contracted organisation, and the programme that funded the research.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
@@ -204,8 +208,8 @@ Ensure that you write in a neutral scientific tone, being as accurate as possibl
 Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
 Don't just return a list.
 
-Programme Awards:
-            {prog_deets}
+**Programme Awards**:
+{prog_deets}
             """
 
             prog_summary = generate_summary(prog_prompt, api_key)
@@ -218,6 +222,7 @@ Programme Awards:
         # Combined (only if "Both" selected)
         if run_option == "Both":
             combined_prompt = f"""
+**INSTRUCTIONS**
 Below, you have been given summaries of NIHR programme awards and NIHR Infrastructure supported projects.
 I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
@@ -228,8 +233,8 @@ Don't just return a list.
 MAKE SURE YOU TALK ABOUT BOTH INFRASTRUCTURE SUPPORTED PROJCECTS AND PROGRAMME AWARDS, LINKING THE COMMON THEMES OF THE SUMMARIES UP. This summary will be displayed with the combined summary, so no need to repeat everything, just make the key points. 
 
 
-            Combined Summary:
-            {combined_summary}
+Combined Summary:
+{combined_summary}
 
 
             """
