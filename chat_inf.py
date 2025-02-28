@@ -152,8 +152,9 @@ if start_query and api_key and query:
 - You have been provided the project titles, research summaries, with the centre and year the project took place.
 - There may be duplicated projects where they are supported across multiple years or multiple centres.
 
+
 **TASK**
-- I want you to provide an overview of the work relevant to the query: "{query}"
+- Using only the projects listed below, provide an easy to read summary of the research directly relevant to the query: "{query}"
 
 **INSTRUCTIONS**
 - Where possible, discuss work from all schemes - so BRCs, MICs, ARCs, PSTRCs and so on, these are determined by the 'centre name' which will have location and scheme in the name.
@@ -167,6 +168,7 @@ if start_query and api_key and query:
 - Try and talk about aims and potential benefits of the research as much as possible.
 - Don't just return a list.
 - Make sure you don't repeat yourself.
+- If there are a lot of relevant projects, just talk about the most interesting and the common themes.
 
 **Specific focus request from the user:**
 {focus_text}
@@ -210,7 +212,7 @@ if start_query and api_key and query:
 
 
 **TASK**
-- I want you to provide an overview of the work relevant to the query: "{query}"
+- Using only the awards below, provide an easy to read summary of the research directly relevant to the query: "{query}"
 
 **INSTRUCTIONS**
 - Unless specified in the focus, limit response to 500 words. 
@@ -225,6 +227,8 @@ if start_query and api_key and query:
 - Talk about UK based research first unless specified in the specific focus below.
 - Don't just return a list.
 - Make sure you don't repeat yourself.
+- If there are a lot of relevant projects, just talk about the most interesting and the common themes.
+
 
 **Specific focus request from the user:**
 {focus_text}
