@@ -152,14 +152,15 @@ You work for the Department of Health and Social Care in the United Kingdom.
 Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
-Unless specified in the focus, limit response to 600 words. If no projects are relevant to the query, say so.
-I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
+Unless specified in the focus, limit response to 500 words. If no projects are relevant to the query, say so.
+I want you to provide an overview of the work relevant to the query: "{query}"
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers, schemes, and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
 Ensure that you write in a neutral scientific tone, being as accurate as possible, while still aiming to capture the audience's attention. Only talk about the evidence you are presented with in the prompt, but make the links between them whenever possible.
 Make sure the text is easy to read and take the main points away from. Where useful, use bold text, bullet points, and section headings. Try and talk about aims and potential benefits of the research as much as possible.
 Don't just return a list.
 
-
+Specific focus request:
+{focus_text}
     
 
 **Projects:**
@@ -224,14 +225,16 @@ Don't just return a list.
             combined_prompt = f"""
 **INSTRUCTIONS**
 Below, you have been given summaries of NIHR programme awards and NIHR Infrastructure supported projects.
-I want you to provide an overview of the work relevant to the query: "{query}".{focus_text}
+I want you to provide an overview of the work relevant to the query: "{query}"
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers and centres where appropriate. Link together centres and researchers where possible.
-Unless specified, limit response to 300 words.
+Unless specified in the focus request, limit response to 500 words.
 Be as clear as possible, bullet points where sensible.
 Ensure that you write in a neutral scientific tone, being as precise as possible. Only talk about the evidence you are presented in the prompt, but make the links whenever possible.
 Don't just return a list.
 MAKE SURE YOU TALK ABOUT BOTH INFRASTRUCTURE SUPPORTED PROJCECTS AND PROGRAMME AWARDS, LINKING THE COMMON THEMES OF THE SUMMARIES UP. This summary will be displayed with the combined summary, so no need to repeat everything, just make the key points. 
 
+Specific focus request:
+{focus_text}
 
 Combined Summary:
 {combined_summary}
