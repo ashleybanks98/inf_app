@@ -152,7 +152,7 @@ You work for the Department of Health and Social Care in the United Kingdom.
 Below, you have been provided a set of projects supported by National Institute for Health and Care (NIHR) infrastructure.
 You have been provided the project titles, research summaries, with the centre and year the project took place.
 There may be duplicated projects.
-Try to talk about projects from different schemes, not just Applied Research Collaborations.
+Where possible, discuss work from all schemes - so BRCs, MICs, ARCs, PSTRCs and so on, these are determined by the 'centre name' which will have location and scheme in the name.
 Unless specified in the focus, limit response to 500 words. If no projects are relevant to the query, say so.
 I want you to provide an overview of the work relevant to the query: "{query}"
 Try to advertise NIHR positively, linking between the sources to show how NIHR supports innovation across the translational pathway. Talk about the researchers, schemes, and centres where appropriate. Link together centres and researchers when it is the same project where appropriate.
