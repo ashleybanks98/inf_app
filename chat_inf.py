@@ -51,8 +51,8 @@ def generate_summary(prompt, api_key):
     """Generate summary from Gemini given a prompt."""
     genai.configure(api_key=api_key)
     generation_config = {
-        "temperature": 0.2,
-        "top_k": 3,
+        "temperature": 0.5,
+        "top_k": 20,
         "max_output_tokens": 4000,
         "response_mime_type": "text/plain",
     }
@@ -63,7 +63,6 @@ def generate_summary(prompt, api_key):
     )
 
     response = model.generate_content(prompt)
-    sleep(5)
     return response.text
 
 
