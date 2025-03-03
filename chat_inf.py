@@ -105,6 +105,8 @@ This tool allows you to query NIHR-supported projects and receive a summary of r
 - Programme awards are only those available on **NIHR Open Data**.
 - **Output csv files will simply show the results the summary has been generated using**, sorted by descending semantic similarity to the query, and may either show many **false positives** (selected number of results too high) or **miss relevant research** (selected number of results too high).
 
+**Feedback:**
+Feedback is welcomed at https://tinyurl.com/459tdbzh
 
 """)
 
