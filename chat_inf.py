@@ -90,11 +90,11 @@ st.set_page_config(page_title="NIHR Project Query Tool", layout="wide")
 st.title("🔍 NIHR Project Query Tool")
 
 st.markdown("""
-This tool allows you to query NIHR-supported projects and receive a summary of research relevant to your query.  
-- Select **Infrastructure**, **Programmes**, or **Both**.  
+This tool allows you to query NIHR-supported projects and receive a summary of research relevant to your query.   
 - Enter your reusable **Google API Key** (can be generated at "https://aistudio.google.com/apikey").
 - Enter your **query**, e.g., "novel drug delivery device".  
 - Specify the **focus** of the summary (optional), e.g., "the organisations undertaking the work", "do not talk about the researchers", or "group projects by their intended aim".  
+- Select **Infrastructure**, **Programmes**, or **Both**. 
 - Specify the **number of closest matches** to consider, use more for broader topics.  
 - Press **Start** to generate the summary.  
 - **Export the results** as CSV or TXT files.  
