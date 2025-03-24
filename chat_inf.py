@@ -170,6 +170,8 @@ if start_query and api_key and query:
 - Make sure the text is easy to take the main points away from. Where useful, use bold text, bullet points, and section headings. 
 - Try and talk about aims and potential benefits of the research as much as possible.
 - Talk around the projects and make links, I do not want just a list.
+- Include the correct Project IDs when they are being referenced.
+- Avoid using really vague language like 'several'.
 - Make sure you don't repeat yourself.
 - If there are a lot of relevant projects, just talk about the most interesting and the common themes.
 
@@ -229,6 +231,8 @@ if start_query and api_key and query:
 - Try and talk about aims and potential benefits of the research as much as possible.
 - Talk about UK based research first unless specified in the specific focus below.
 - Talk around the projects and make links, I do not want just a list.
+- Include the correct Project IDs when they are being referenced.
+- Avoid using really vague language like 'several'.
 - Make sure you don't repeat yourself.
 - If there are a lot of relevant projects, just talk about the most interesting and the common themes.
 
