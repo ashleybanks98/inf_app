@@ -90,6 +90,10 @@ st.set_page_config(page_title="NIHR Project Query Tool", layout="wide")
 st.title("🔍 NIHR Project Query Tool")
 
 st.markdown("""
+**Please note: this tool will shortly be migrating to the link below. Please register for this tool and start to use the new version.
+https://nihr-projects-tool-service-847121582416.europe-west2.run.app/
+**
+
 This tool allows you to query NIHR-supported projects and receive a summary of research relevant to your query.   
 - Enter your reusable **Google API Key** (can be generated at "https://aistudio.google.com/apikey").
 - Enter your **query**, e.g., "novel drug delivery device".  
